@@ -74,7 +74,7 @@ class Test(unittest.TestCase):
         gr.addStudent(newStudent)
         self.assertIn(newStudent, gr.students)
 
-    # Test student roster for student mike
+    # Test student roster show students method
     def test_students(self):
         self.assertListEqual(
             [
