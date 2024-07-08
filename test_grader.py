@@ -3,6 +3,7 @@ from grader import Grader
 
 gr = Grader()
 
+
 class Test(unittest.TestCase):
     # Test with number outside of range 0-100 should return true
     def test_grade_info_for_input_error(self):
@@ -14,15 +15,14 @@ class Test(unittest.TestCase):
             "You did not entered a grade number between 0 and 100.",
         )
 
-    # Test for grade to return an A
-    def test_grade_info_for_a(self):
+    # Test for grade to return an A (including edge case of 100)
+    def test_grade_info_for_a_and_edge_case(self):
         name = "student1"
         assignment = "Maths"
-        grade = 90
-        self.assertEqual(
-            gr.gradeInfo(name, assignment, grade),
-            "Hello student1\nYour letter grade for Maths assignment is as follows: A\nAssignment details:\nYou have met most or all of the assignment's requirements.",
-        )
+        grades = [90, 100]  # Test both A and edge case (100)
+        for grade in grades:
+            expected_message = f"Hello student1\nYour letter grade for Maths assignment is as follows: A\nAssignment details:\nYou have met most or all of the assignment's requirements."
+            self.assertEqual(gr.gradeInfo(name, assignment, grade), expected_message)
 
     # Test for grade to return an B
     def test_grade_info_for_b(self):
@@ -54,12 +54,13 @@ class Test(unittest.TestCase):
             "Hello student4\nYour letter grade for Music Theory assignment is as follows: D\nAssignment details:\nYou have met some of the assignment's requirements.",
         )
 
-    # Test for grade to check if student failed
-    def test_grade_info_for_fail(self):
+    # Test for grade to check if student failed (including edge case of 0)
+    def test_grade_info_for_fail_and_edge_case(self):
         name = "student5"
         assignment = "Calc XIV"
-        grade = 45
-        self.assertFalse(gr.gradeInfo(name, assignment, grade))
+        grades = [0, 45]  # Test both failing grades (0 and below 60)
+        for grade in grades:
+            self.assertFalse(gr.gradeInfo(name, assignment, grade))
 
     # Test for grade to check if student passed
     def test_grade_info_for_pass(self):
@@ -74,7 +75,7 @@ class Test(unittest.TestCase):
         gr.addStudent(newStudent)
         self.assertIn(newStudent, gr.students)
 
-    # Test student roster for student mike
+    # Test student roster show students method
     def test_students(self):
         self.assertListEqual(
             [
@@ -92,3 +93,10 @@ class Test(unittest.TestCase):
             ],
             gr.showStudents(),
         )
+
+    # Test student roster show students method (without modifying list)
+    def test_students_without_modifying(self):
+        original_students = gr.students.copy()  # Create a copy of the list
+        students = gr.showStudents()
+        self.assertListEqual(original_students, students)
+        self.assertIsNot(original_students, students)
